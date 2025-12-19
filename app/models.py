@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, Date, DateTime, Text, Boolean, JSON
+from sqlalchemy import Column, Integer, BigInteger, String, Float, Date, DateTime, Text, Boolean, JSON
 from sqlalchemy.sql import func
 from app.db import Base
 
@@ -18,8 +18,8 @@ class Movie(Base):
     poster_path = Column(String, nullable=True)
     backdrop_path = Column(String, nullable=True)
     runtime = Column(Integer, nullable=True)  # Duration in minutes
-    budget = Column(Integer, nullable=True)
-    revenue = Column(Integer, nullable=True)
+    budget = Column(BigInteger, nullable=True)  # Changed to BigInteger for large values
+    revenue = Column(BigInteger, nullable=True)  # Changed to BigInteger for large values
     tagline = Column(String, nullable=True)
     status = Column(String, nullable=True)  # Released, Post Production, etc.
     is_trending = Column(Boolean, default=False, index=True)

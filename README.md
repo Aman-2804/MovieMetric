@@ -14,17 +14,21 @@ This project provides a REST API for querying movie data with advanced analytics
 - Database connection and session management (`app/db.py`)
 - Movie model with all necessary fields for endpoints
 
-### 2. **Data Ingestion**
+### 2. **Data Ingestion & Database Management**
 - TMDB API integration (`ingest/fetch_tmdb.py`)
 - Fetches movies from multiple endpoints:
-  - Popular movies (10 pages)
-  - Top rated movies (10 pages)
-  - Now playing (5 pages)
-  - Upcoming releases (5 pages)
+  - Popular movies (30 pages)
+  - Top rated movies (30 pages)
+  - Now playing (10 pages)
+  - Upcoming releases (10 pages)
   - Trending movies
+  - Discover endpoint with multiple filters
 - Automatically calculates `is_trending` and `is_underrated` flags
-- Handles ~600-700 movies per run
+- Handles 1000+ movies per run
 - Updates existing movies (no duplicates)
+- Database export/import scripts (`scripts/export_db.sh`, `scripts/import_db.sh`)
+  - Share database dumps via git
+  - Quick setup for team members
 
 ### 3. **Project Structure**
 ```
@@ -42,6 +46,11 @@ MovieGPT/
 │       └── analytics.py    # Analytics endpoints (needs implementation)
 ├── ingest/
 │   └── fetch_tmdb.py       # TMDB data ingestion script
+├── scripts/
+│   ├── export_db.sh        # Export database to SQL dump
+│   └── import_db.sh        # Import database from SQL dump
+├── data/
+│   └── database_dump.sql   # Database dump file (committed to git)
 ├── docker-compose.yml      # PostgreSQL setup
 ├── requirements.txt        # Python dependencies
 ├── .env                    # Environment variables (API_KEY, DATABASE_URL)
@@ -102,7 +111,24 @@ python app/create_tables.py
 
 Expected output: `Tables created!!`
 
-### Step 5: Ingest Movie Data from TMDB
+### Step 5: Populate Database with Movie Data
+
+You have **two options** to get movie data:
+
+#### Option 1: Import Pre-populated Database (Recommended - Fastest)
+
+If a database dump is available in the repository, import it:
+
+```bash
+# Import the database dump
+./scripts/import_db.sh
+```
+
+This will load all movies from the shared database dump (takes seconds).
+
+#### Option 2: Fetch Movies from TMDB API
+
+Alternatively, fetch your own data from TMDB:
 
 ```bash
 # Fetch movies from TMDB API
@@ -110,10 +136,10 @@ python ingest/fetch_tmdb.py
 ```
 
 This will:
-- Fetch ~600-700 movies from TMDB
+- Fetch 1000+ movies from TMDB
 - Populate the database with movie data
 - Calculate trending and underrated flags
-- Take a few minutes to complete (due to API rate limiting)
+- Take 15-20 minutes to complete (due to API rate limiting)
 
 **Expected output:**
 ```
@@ -122,8 +148,23 @@ Fetching from popular...
    Processed page 1
    ...
 Ingestion Complete!
-   Total movies: 650
+   Total movies: 1200
    Trending: 45
    Underrated: 120
 ```
 
+**Note:** Choose Option 1 if you want the same data as the team. Choose Option 2 if you want fresh data or more movies.
+
+### Step 6: Run the Application
+
+```bash
+# Activate venv
+source .venv/bin/activate
+
+# Run with python -m to ensure correct interpreter
+python -m uvicorn app.main:app --reload
+```
+
+The API will be available at:
+- API: http://127.0.0.1:8000
+- API Docs: http://127.0.0.1:8000/docs
