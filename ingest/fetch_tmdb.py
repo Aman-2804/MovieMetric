@@ -9,8 +9,8 @@ from dotenv import load_dotenv
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
 
-from app.db import SessionLocal, Base, engine
-from app.models import Movie
+from services.api.app.db import SessionLocal, Base, engine
+from services.api.app.models import Movie
 
 # Load .env from project root
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

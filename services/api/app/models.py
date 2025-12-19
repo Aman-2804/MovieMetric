@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, BigInteger, String, Float, Date, DateTime, Text, Boolean, JSON
 from sqlalchemy.sql import func
-from app.db import Base
+from .db import Base
 
 
 class Movie(Base):

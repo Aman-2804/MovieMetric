@@ -1,18 +1,20 @@
 from collections import Counter
+from typing import List
 from fastapi import APIRouter, Depends
 from sqlalchemy import extract
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import func
-from app.deps import get_db
-from app.models import Movie
+from ..deps import get_db
+from ..models import Movie
+from ..schemas import TopGenreOut, RatingsByDecadeOut, MessageResponse
 
 router = APIRouter(prefix="/analytics", tags=["analytics"])
 
-@router.get("/ping")
+@router.get("/ping", response_model=MessageResponse)
 def ping():
     return {"ok": True}
 
-@router.get("/top-genres")
+@router.get("/top-genres", response_model=List[TopGenreOut])
 def top_genres(db: Session = Depends(get_db)):
     # Get all movies
     movies = db.query(Movie).all()
@@ -35,15 +37,15 @@ def top_genres(db: Session = Depends(get_db)):
     top_genres = genre_counter.most_common(20)
     
     return [
-        {
-            "id": genre_id,
-            "name": genre_map.get(genre_id, f"Genre {genre_id}"),
-            "movie_count": count
-        }
+        TopGenreOut(
+            id=genre_id,
+            name=genre_map.get(genre_id, f"Genre {genre_id}"),
+            movie_count=count
+        )
         for genre_id, count in top_genres
     ]
 
-@router.get("/ratings-by-decade")
+@router.get("/ratings-by-decade", response_model=List[RatingsByDecadeOut])
 def ratings_by_decade(db: Session = Depends(get_db)):
     rows = (
         db.query(
@@ -58,7 +60,11 @@ def ratings_by_decade(db: Session = Depends(get_db)):
     )
     
     return [
-        {"decade": int(r.decade), "avg_rating": float(r.avg_rating or 0), "movie_count": r.movie_count}
+        RatingsByDecadeOut(
+            decade=int(r.decade),
+            avg_rating=float(r.avg_rating or 0),
+            movie_count=r.movie_count
+        )
         for r in rows
     ]
 

@@ -23,16 +23,3 @@ SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False, futu
 
 Base = declarative_base()
 
-
-# Dependency for FastAPI to get database session
-def get_db():
-    """
-    Database session dependency for FastAPI.
-    Yields a database session and ensures it's closed after use.
-    """
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-

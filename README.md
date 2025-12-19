@@ -10,8 +10,8 @@ This project provides a REST API for querying movie data with advanced analytics
 
 ### 1. **Database Setup**
 - PostgreSQL database configured with Docker Compose
-- SQLAlchemy models defined (`app/models.py`)
-- Database connection and session management (`app/db.py`)
+- SQLAlchemy models defined (`services/api/app/models.py`)
+- Database connection and session management (`services/api/app/db.py`)
 - Movie model with all necessary fields for endpoints
 
 ### 2. **Data Ingestion & Database Management**
@@ -33,17 +33,19 @@ This project provides a REST API for querying movie data with advanced analytics
 ### 3. **Project Structure**
 ```
 MovieGPT/
-├── app/
-│   ├── __init__.py
-│   ├── main.py              # FastAPI app (needs implementation)
-│   ├── db.py               # Database connection & session
-│   ├── models.py           # SQLAlchemy Movie model
-│   ├── schemas.py          # Pydantic schemas (needs implementation)
-│   ├── deps.py             # Dependencies (needs implementation)
-│   ├── create_tables.py    # Table creation script
-│   └── routers/
-│       ├── movies.py       # Movie endpoints (needs implementation)
-│       └── analytics.py    # Analytics endpoints (needs implementation)
+├── services/
+│   └── api/
+│       └── app/
+│           ├── __init__.py
+│           ├── main.py              # FastAPI app
+│           ├── db.py               # Database connection & session
+│           ├── models.py           # SQLAlchemy Movie model
+│           ├── schemas.py          # Pydantic schemas
+│           ├── deps.py             # Dependencies
+│           ├── create_tables.py    # Table creation script
+│           └── routers/
+│               ├── movies.py       # Movie endpoints
+│               └── analytics.py    # Analytics endpoints
 ├── ingest/
 │   └── fetch_tmdb.py       # TMDB data ingestion script
 ├── scripts/
@@ -106,7 +108,7 @@ You should see a `postgres` container running on port 5432.
 
 ```bash
 # Run from project root
-python app/create_tables.py
+python services/api/app/create_tables.py
 ```
 
 Expected output: `Tables created!!`
@@ -162,7 +164,7 @@ Ingestion Complete!
 source .venv/bin/activate
 
 # Run with python -m to ensure correct interpreter
-python -m uvicorn app.main:app --reload
+python -m uvicorn services.api.app.main:app --reload
 ```
 
 The API will be available at:
