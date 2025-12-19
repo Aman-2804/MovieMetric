@@ -12,7 +12,9 @@ sys.path.insert(0, project_root)
 from app.db import SessionLocal, Base, engine
 from app.models import Movie
 
-load_dotenv()
+# Load .env from project root
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+load_dotenv(os.path.join(project_root, '.env'))
 
 API_KEY = os.getenv("API_KEY")  # Using API_KEY from .env
 BASE = "https://api.themoviedb.org/3"
