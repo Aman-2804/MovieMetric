@@ -9,7 +9,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from services.api.app.main import app
 from services.api.app.models import Movie
-from services.api.app.db import Base
+from services.api.app.db import Base, SessionLocal
+from services.api.app import deps
 
 # Use test database
 TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL", "postgresql://moviegpt:moviegpt@localhost:5432/moviegpt_test")
@@ -18,9 +19,17 @@ TestSessionLocal = sessionmaker(bind=test_engine)
 
 
 @pytest.fixture
-def client():
-    """Create test client"""
-    return TestClient(app)
+def client(test_db_session):
+    """Create test client with test database override"""
+    def override_get_db():
+        try:
+            yield test_db_session
+        finally:
+            pass
+    
+    app.dependency_overrides[deps.get_db] = override_get_db
+    yield TestClient(app)
+    app.dependency_overrides.clear()
 
 
 @pytest.fixture(scope="function")

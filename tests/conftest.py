@@ -16,13 +16,7 @@ from services.api.app.models import Movie
 @pytest.fixture(scope="function")
 def test_db():
     """Create a test database session"""
-    # Create test engine with in-memory SQLite for faster tests
-    # Or use a test Postgres database
-    engine = create_engine(
-        TEST_DATABASE_URL,
-        poolclass=StaticPool,
-        connect_args={"check_same_thread": False} if "sqlite" in TEST_DATABASE_URL else {},
-    )
+    engine = create_engine(TEST_DATABASE_URL)
     
     # Create tables
     Base.metadata.create_all(bind=engine)

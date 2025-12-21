@@ -6,6 +6,7 @@ import pytest
 from datetime import date, datetime
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from unittest.mock import patch
 from services.api.app.db import Base
 from services.api.app.models import Movie, MovieTrendingDaily, GenreStatsDaily, RatingsByDecade
 from services.worker.worker_app.tasks_compute import (
@@ -75,8 +76,9 @@ class TestComputeTasks:
     
     def test_compute_trending_populates_artifacts(self, test_db, sample_movies):
         """Test that compute_trending creates MovieTrendingDaily records"""
-        # Run compute task
-        result = compute_trending(target_date="2024-01-01")
+        # Mock SessionLocal to use test database
+        with patch('services.worker.worker_app.tasks_compute.SessionLocal', return_value=test_db):
+            result = compute_trending(target_date="2024-01-01")
         
         assert result["status"] == "success"
         
@@ -93,8 +95,8 @@ class TestComputeTasks:
     
     def test_compute_genre_stats_populates_artifacts(self, test_db, sample_movies):
         """Test that compute_genre_stats creates GenreStatsDaily records"""
-        # Run compute task
-        result = compute_genre_stats(target_date="2024-01-01")
+        with patch('services.worker.worker_app.tasks_compute.SessionLocal', return_value=test_db):
+            result = compute_genre_stats(target_date="2024-01-01")
         
         assert result["status"] == "success"
         
@@ -110,8 +112,8 @@ class TestComputeTasks:
     
     def test_compute_ratings_by_decade_populates_artifacts(self, test_db, sample_movies):
         """Test that compute_ratings_by_decade creates RatingsByDecade records"""
-        # Run compute task
-        result = compute_ratings_by_decade()
+        with patch('services.worker.worker_app.tasks_compute.SessionLocal', return_value=test_db):
+            result = compute_ratings_by_decade()
         
         assert result["status"] == "success"
         
