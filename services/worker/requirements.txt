@@ -1,0 +1,8 @@
+celery[redis]
+redis
+psycopg2-binary
+sqlalchemy
+python-dotenv
+requests
+meilisearch
+
