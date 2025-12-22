@@ -166,34 +166,6 @@ Cache Check (Redis)
          Return response
 ```
 
-#### How Services Communicate
-
-**API ↔ Worker (via Redis)**
-- API enqueues jobs to Redis queue
-- Worker picks up jobs from Redis
-- Results stored in Redis backend
-- API polls Redis for job status
-
-**API ↔ PostgreSQL**
-- Direct SQLAlchemy connections
-- Connection pooling (10 connections, max 20 overflow)
-- Read operations for API responses
-
-**API ↔ Redis (Caching)**
-- Cache-aside pattern
-- TTL-based expiration (default 1 hour)
-- Cache key format: `prefix:arg1:arg2:...`
-
-**API ↔ Meilisearch**
-- Direct HTTP client connections
-- Search queries bypass PostgreSQL
-- Index updates via worker tasks
-
-**Worker ↔ External Services**
-- TMDB API: HTTP requests with rate limiting
-- PostgreSQL: Write operations for ingestion/computation
-- Meilisearch: Bulk document indexing
-
 #### Scheduled Task Flow
 
 ```
@@ -211,13 +183,6 @@ Update Database/Index
     ↓
 Task Complete (status in Redis)
 ```
-
-**Scheduled Tasks:**
-- **2:00 AM UTC**: Full data ingestion from TMDB
-- **3:00 AM UTC**: Compute trending scores
-- **3:15 AM UTC**: Compute genre statistics
-- **Monday 4:00 AM UTC**: Rebuild search index
-- **Monday 5:00 AM UTC**: Recompute recommendations
 
 ## Project Structure
 
