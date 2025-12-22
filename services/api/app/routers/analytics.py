@@ -18,7 +18,6 @@ def top_genres(
     db: Session = Depends(get_db),
     target_date: Optional[str] = Query(None, description="Date in YYYY-MM-DD format. Defaults to latest available.")
 ):
-    """
     if target_date:
         try:
             query_date = date.fromisoformat(target_date)
