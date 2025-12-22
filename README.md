@@ -1,128 +1,79 @@
 # MovieMetric
 
-A production-ready FastAPI application for movie data management with analytics, search, and background job processing. Built with PostgreSQL, Redis, Celery, and Meilisearch.
+**MovieMetric** is a distributed movie analytics backend built with **FastAPI, PostgreSQL, Redis, Celery, and Meilisearch**.  
+It ingests raw movie data from external APIs, normalizes it into a relational database, precomputes analytics in background jobs, and serves fast, read-only REST APIs for discovery, analytics, and search.
 
-## Features
+> Designed to mirror how internal analytics platforms are built in production systems by separating offline batch processing from online serving.
 
-- **REST API** for movie data and analytics
-- **Full-text search** powered by Meilisearch
-- **Background job processing** with Celery
-- **Scheduled tasks** for automated data updates
-- **Caching** with Redis for improved performance
-- **Health checks** and metrics endpoints
-- **Comprehensive test suite** with CI/CD
+---
 
-## What Problem Does MovieMetric Solve?
+## Key Features
 
-### The Core Problem
+- RESTful API for movie discovery and analytics
+- Asynchronous data ingestion and batch processing (Celery + Redis)
+- Precomputed analytics (trending scores, genre statistics, decade ratings)
+- Full-text search powered by Meilisearch
+- Redis caching for low-latency reads
+- Health check and metrics endpoints
+- Automated tests with CI/CD (GitHub Actions)
 
-Raw movie data from third-party APIs (like TMDB) is not analytics-ready, fast to query, or suitable for internal use.
+---
 
-**TMDB's Limitations:**
-- Optimized for lookup, not analytics
-- Pushes computation to the client
-- Has no concept of your business logic (trending, aggregates, rankings)
-- Not designed for high-frequency queries
+## Problem & Solution
 
-**MovieMetric's Solution:**
-- Ingests raw movie data from external sources
-- Normalizes and stores it in a relational database
-- Precomputes analytics in batch jobs
-- Serves fast, purpose-built APIs for internal use
+### The Problem
 
-**This is an internal analytics platform, not a consumer app.**
+Third-party movie APIs (such as TMDB) are optimized for lookup, not analytics.  
+They push computation to the client, lack domain-specific logic (e.g. trending, aggregates), and are inefficient for high-frequency internal queries.
 
-### What MovieMetric Does
+### The Solution
 
-MovieMetric is a distributed backend system that ingests movie data from external sources, processes and precomputes analytics in batch jobs, stores results in a relational database, and exposes fast, read-only APIs for movie discovery, analytics, search, and recommendations.
+MovieMetric transforms raw movie data into **analytics-ready artifacts** by:
 
-## System Components
+- ingesting and normalizing data into PostgreSQL
+- computing analytics offline using batch jobs
+- exposing fast, purpose-built APIs for internal consumption
 
-Think of MovieMetric as a small factory, not a single app. Each component has a specific responsibility.
+This system is designed as an **internal analytics platform**, not a consumer-facing application.
 
-### 🔵 API Service (FastAPI)
+---
 
-**What it does:**
-- Handles HTTP requests
-- Serves JSON responses
-- Reads data only (never writes)
-- Implements caching for hot reads
+## Architecture Overview
 
-**What it does NOT do:**
-- No ingestion
-- No heavy computation
-- No batch processing
+MovieMetric is implemented as a **distributed backend system** with clear separation of responsibilities:
 
-**Why:** APIs should be fast, predictable, and stateless.
+- **API (FastAPI)**  
+  Stateless, read-only service that serves precomputed data via REST endpoints.
 
-**In one line:** The API is a read-only interface that serves precomputed data.
+- **Worker (Celery)**  
+  Executes background jobs for ingestion, analytics computation, search indexing, and recommendations.
 
-### 🟡 Worker Service (Celery)
+- **Scheduler (Celery Beat)**  
+  Automates periodic ingestion and recomputation of analytics.
 
-**What it does:**
-- Runs background jobs
-- Ingests data from TMDB
-- Computes analytics (trending, genre stats, recommendations)
-- Builds search indexes
-- Processes batch workloads
+- **PostgreSQL**  
+  Source of truth for raw data, normalized relations, and precomputed analytics artifacts.
 
-**Why:** Heavy work should never block user requests. Batch jobs are cheaper and safer offline.
+- **Redis**  
+  Used as a task queue for background jobs and as a cache for hot API endpoints.
 
-**In one line:** The worker performs all write-heavy and compute-heavy tasks asynchronously.
+- **Meilisearch**  
+  Dedicated full-text search engine for fast, filtered movie search.
 
-### 🟢 Scheduler (Celery Beat)
+> Heavy computation is performed offline; the API layer only serves fast reads.
 
-**What it does:**
-- Decides when jobs run
-- Triggers ingestion and analytics jobs on a schedule
-- Automates system maintenance
+---
 
-**Why:** Automation eliminates manual scripts. The system updates itself.
+## Technologies Used
 
-**In one line:** The scheduler makes the system autonomous.
+- **Backend:** FastAPI, SQLAlchemy  
+- **Database:** PostgreSQL  
+- **Async & Jobs:** Celery, Redis  
+- **Search:** Meilisearch  
+- **Infrastructure:** Docker  
+- **CI/CD:** GitHub Actions  
 
-### 🔴 PostgreSQL (Source of Truth)
-
-**What it stores:**
-- Raw movie data
-- Normalized relations (movies, genres, mappings)
-- Precomputed analytics ("artifacts")
-- Recommendations
-
-**Why relational:**
-- Strong consistency
-- Joins for analytics
-- Easy to reason about
-
-**In one line:** Postgres is the authoritative data store for MovieMetric.
-
-### 🟣 Redis (Cache + Queue)
-
-**What it does:**
-- Message broker for Celery (job queue)
-- Cache for hot API endpoints
-- Stores job results
-
-**Why:**
-- Decouples services
-- Improves latency
-- Prevents recomputation
-
-**In one line:** Redis connects services and accelerates reads.
-
-### 🟠 Meilisearch (Search Engine)
-
-**What it does:**
-- Full-text search
-- Filtering and ranking
-- Fast query responses
-
-**Why:**
-- SQL is not good at text search
-- Search is a separate concern
-- Optimized for search workloads
-
-**In one line:** Meilisearch handles search so the database doesn't have to.
+---
 
 ## Data Flow
 
