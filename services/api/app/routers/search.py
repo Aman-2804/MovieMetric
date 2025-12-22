@@ -45,7 +45,6 @@ def search_movies(
     limit: int = Query(20, ge=1, le=100, description="Number of results to return"),
     offset: int = Query(0, ge=0, description="Offset for pagination"),
 ):
-    """
     client = get_meilisearch_client()
     index_name = "movies"
     
