@@ -15,7 +15,7 @@ Instead of querying third-party APIs directly every time, It ingests raw movie d
 - Health check and metrics endpoints
 - Automated tests with CI/CD (GitHub Actions)
 
---
+---
 
 ## Why Movie Metric
 
@@ -33,7 +33,7 @@ MovieMetric is built to explore how production systems solve this problem:
 
 This mirrors how internal platforms at companies separate batch processing from online serving.
 
---
+---
 
 ## Architecture Overview
 
