@@ -53,7 +53,6 @@ MovieMetric is implemented as a **distributed backend system** with clear separa
 - **Meilisearch**  
   Dedicated full-text search engine for fast, filtered movie search.
 
-> Heavy computation is performed offline; the API layer only serves fast reads.
 
 ---
 
