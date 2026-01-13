@@ -1,9 +1,8 @@
 # MovieMetric
 
 **MovieMetric** is a distributed movie analytics backend built with **FastAPI, PostgreSQL, Redis, Celery, and Meilisearch**.  
-It ingests raw movie data from external APIs, normalizes it into a relational database, precomputes analytics in background jobs, and serves fast, read-only REST APIs for discovery, analytics, and search.
+Instead of querying third-party APIs directly every time, It ingests raw movie data from external APIs, normalizes it into a relational database, precomputes analytics in background jobs, and serves fast, read-only REST APIs for discovery, analytics, and search.
 
-Designed to mirror how internal analytics platforms are built in production systems by separating offline batch processing from online serving.
 
 
 ## Key Features
@@ -16,25 +15,21 @@ Designed to mirror how internal analytics platforms are built in production syst
 - Health check and metrics endpoints
 - Automated tests with CI/CD (GitHub Actions)
 
+## Why Movie Metric
 
-## Problem & Solution
+Most movie APIs (like TMDB) are great for lookups, but bad for analytics:
 
-### The Problem
+- they push computation to the client
+- they don’t support domain-specific metrics (trending, aggregates, time-based stats)
+- repeated queries are slow and inefficient
 
-Third-party movie APIs (such as TMDB) are optimized for lookup, not analytics.  
-They push computation to the client, lack domain-specific logic (e.g. trending, aggregates), and are inefficient for high-frequency internal queries.
+MovieMetric is built to explore how production systems solve this problem:
 
-### The Solution
+- ingest once
+- compute offline
+- serve fast
 
-MovieMetric transforms raw movie data into **analytics-ready artifacts** by:
-
-- ingesting and normalizing data into PostgreSQL
-- computing analytics offline using batch jobs
-- exposing fast, purpose-built APIs for internal consumption
-
-This system is designed as an **internal analytics platform**, not a consumer-facing application.
-
----
+This mirrors how internal platforms at companies separate batch processing from online serving.
 
 ## Architecture Overview
 
