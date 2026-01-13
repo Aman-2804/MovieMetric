@@ -3,9 +3,8 @@
 **MovieMetric** is a distributed movie analytics backend built with **FastAPI, PostgreSQL, Redis, Celery, and Meilisearch**.  
 It ingests raw movie data from external APIs, normalizes it into a relational database, precomputes analytics in background jobs, and serves fast, read-only REST APIs for discovery, analytics, and search.
 
-> Designed to mirror how internal analytics platforms are built in production systems by separating offline batch processing from online serving.
+Designed to mirror how internal analytics platforms are built in production systems by separating offline batch processing from online serving.
 
----
 
 ## Key Features
 
@@ -17,7 +16,6 @@ It ingests raw movie data from external APIs, normalizes it into a relational da
 - Health check and metrics endpoints
 - Automated tests with CI/CD (GitHub Actions)
 
----
 
 ## Problem & Solution
 
