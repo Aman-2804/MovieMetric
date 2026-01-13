@@ -79,18 +79,18 @@ MovieMetric is implemented as a **distributed backend system** with clear separa
        ▼
 ┌─────────────────────────────────────────────────┐
 │           API Service (FastAPI)                 │
-│  ┌──────────────────────────────────────────┐  │
-│  │  Middleware: Performance Monitoring      │  │
-│  └──────────────────────────────────────────┘  │
-│  ┌──────────────────────────────────────────┐  │
-│  │  Cache Check (Redis)                      │
-│  │  ├─ Cache Hit → Return Cached Data      │  │
-│  │  └─ Cache Miss → Query Database          │  │
-│  └──────────────────────────────────────────┘  │
-│  ┌──────────────────────────────────────────┐  │
-│  │  Routers: /movies, /analytics, /search   │  │
-│  └──────────────────────────────────────────┘  │
-└──────┬──────────────────────────────────────┬──┘
+│  ┌──────────────────────────────────────────┐   │
+│  │  Middleware: Performance Monitoring      │   │
+│  └──────────────────────────────────────────┘   │
+│  ┌──────────────────────────────────────────┐   │
+│  │  Cache Check (Redis)                     |   │
+│  │  ├─ Cache Hit → Return Cached Data       │   │
+│  │  └─ Cache Miss → Query Database          │   │
+│  └──────────────────────────────────────────┘   │
+│  ┌──────────────────────────────────────────┐   │
+│  │  Routers: /movies, /analytics, /search   │   │
+│  └──────────────────────────────────────────┘   │
+└──────┬───────────────────────────────────────┬──┘
        │                                       │
        │ Query                                 │ Enqueue Job
        ▼                                       ▼
@@ -111,7 +111,7 @@ MovieMetric is implemented as a **distributed backend system** with clear separa
                     ▼                        ▼                        ▼
             ┌──────────────┐        ┌──────────────┐        ┌──────────────┐
             │   TMDB API   │        │  PostgreSQL  │        │ Meilisearch  │
-            │  (Ingestion) │        │ (Computation)│        │ (Index Build) │
+            │  (Ingestion) │        │ (Computation)│        │ (Index Build)│
             └──────────────┘        └──────────────┘        └──────────────┘
 ```
 
