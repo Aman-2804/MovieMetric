@@ -369,20 +369,15 @@ Testing ensures your system works correctly and catches regressions when code ch
 **A. Unit Tests** (Fast, Pure Logic)
 - Test mathematical formulas and business rules without databases
 - Examples: trending score calculation, recommendation similarity scoring
-- Run in milliseconds, no external dependencies
-- Location: `tests/unit/`
 
 **B. Integration Tests** (API + Database)
 - Test real API endpoints with actual database connections
 - Verify routes are wired correctly, queries work, and JSON contracts are maintained
 - Use a test database with known data
-- Location: `tests/integration/`
 
 **C. Worker Tests** (Background Jobs)
 - Verify Celery tasks actually perform their work
 - Test that ingestion tasks write to database, compute tasks populate artifact tables
-- Critical because workers can fail silently in production
-- Location: `tests/worker/`
 
 ### Run Tests
 
