@@ -362,7 +362,7 @@ celery -A services.worker.worker_app.celery_app beat --loglevel=info
 
 ## Testing
 
-Testing ensures your system works correctly and catches regressions when code changes. This project includes three types of tests that verify different aspects of the system.
+This project includes three types of tests that verify different aspects of the system.
 
 ### Test Types
 
