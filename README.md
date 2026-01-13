@@ -410,15 +410,6 @@ The CI pipeline:
 - Runs all test suites
 - Generates coverage reports
 
-## Scheduled Tasks
-
-Celery Beat runs the following scheduled tasks:
-
-- **Nightly (2:00 AM UTC)**: Full data ingestion
-- **Nightly (3:00 AM UTC)**: Trending computation
-- **Nightly (3:15 AM UTC)**: Genre stats computation
-- **Weekly (Monday 4:00 AM UTC)**: Search index rebuild
-- **Weekly (Monday 5:00 AM UTC)**: Recommendations recomputation
 
 ## License
 
