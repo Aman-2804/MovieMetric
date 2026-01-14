@@ -72,54 +72,6 @@ MovieMetric is implemented as a **distributed backend system** with clear separa
 
 ---
 
-### System Architecture & Data Pipeline
-
-#### Service Interaction Flow
-
-```
-┌─────────────┐
-│   Client    │
-└──────┬──────┘
-       │ HTTP Request
-       ▼
-┌─────────────────────────────────────────────────┐
-│           API Service (FastAPI)                 │
-│  ┌──────────────────────────────────────────┐   │
-│  │  Middleware: Performance Monitoring      │   │
-│  └──────────────────────────────────────────┘   │
-│  ┌──────────────────────────────────────────┐   │
-│  │  Cache Check (Redis)                     |   │
-│  │  ├─ Cache Hit → Return Cached Data       │   │
-│  │  └─ Cache Miss → Query Database          │   │
-│  └──────────────────────────────────────────┘   │
-│  ┌──────────────────────────────────────────┐   │
-│  │  Routers: /movies, /analytics, /search   │   │
-│  └──────────────────────────────────────────┘   │
-└──────┬───────────────────────────────────────┬──┘
-       │                                       │
-       │ Query                                 │ Enqueue Job
-       ▼                                       ▼
-┌──────────────┐                    ┌──────────────────┐
-│ PostgreSQL   │                    │   Redis Queue    │
-│              │                    │  (Celery Broker) │
-│ - movies     │                    └────────┬─────────┘
-│ - artifacts  │                             │
-└──────────────┘                             │ Task Message
-                                             ▼
-                                    ┌──────────────────┐
-                                    │ Worker Service   │
-                                    │  (Celery Worker) │
-                                    └────────┬─────────┘
-                                             │
-                    ┌────────────────────────┼────────────────────────┐
-                    │                        │                        │
-                    ▼                        ▼                        ▼
-            ┌──────────────┐        ┌──────────────┐        ┌──────────────┐
-            │   TMDB API   │        │  PostgreSQL  │        │ Meilisearch  │
-            │  (Ingestion) │        │ (Computation)│        │ (Index Build)│
-            └──────────────┘        └──────────────┘        └──────────────┘
-```
-
 
 ## Project Structure
 
