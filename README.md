@@ -4,7 +4,7 @@
 
 Instead of querying third-party APIs directly every time, It ingests raw movie data from external APIs, normalizes it into a relational database, precomputes analytics in background jobs, and serves fast, read-only REST APIs for discovery, analytics, and search.
 
-
+---
 
 ## Key Features
 
@@ -120,66 +120,6 @@ MovieMetric is implemented as a **distributed backend system** with clear separa
             └──────────────┘        └──────────────┘        └──────────────┘
 ```
 
-#### Data Pipeline Stages
-
-**1. Data Ingestion Pipeline**
-```
-TMDB API → Worker Task → PostgreSQL (movies table)
-         ↓
-    Redis Queue (job tracking)
-         ↓
-    API Endpoint (/admin/jobs/{id}) for status
-```
-
-**2. Analytics Computation Pipeline**
-```
-PostgreSQL (movies) → Worker Task → PostgreSQL (artifact tables)
-                    ↓
-              - movie_trending_daily
-              - genre_stats_daily
-              - ratings_by_decade
-              - movie_recommendations
-```
-
-**3. Search Index Pipeline**
-```
-PostgreSQL (movies) → Worker Task → Meilisearch Index
-                    ↓
-              Full-text search documents
-```
-
-**4. API Request Pipeline (with Caching)**
-```
-Client Request
-    ↓
-API Middleware (latency tracking)
-    ↓
-Cache Check (Redis)
-    ├─ Hit → Return cached response (fast)
-    └─ Miss → Query PostgreSQL
-              ↓
-         Store in cache
-              ↓
-         Return response
-```
-
-#### Scheduled Task Flow
-
-```
-Celery Beat (Scheduler)
-    ↓
-Scheduled Time Trigger
-    ↓
-Redis Queue (task message)
-    ↓
-Worker Picks Up Task
-    ↓
-Execute Task Logic
-    ↓
-Update Database/Index
-    ↓
-Task Complete (status in Redis)
-```
 
 ## Project Structure
 
@@ -372,17 +312,8 @@ This project includes three types of tests that verify different aspects of the 
 ### Test Types
 
 **A. Unit Tests** (Fast, Pure Logic)
-- Test mathematical formulas and business rules without databases
-- Examples: trending score calculation, recommendation similarity scoring
-
 **B. Integration Tests** (API + Database)
-- Test real API endpoints with actual database connections
-- Verify routes are wired correctly, queries work, and JSON contracts are maintained
-- Use a test database with known data
-
 **C. Worker Tests** (Background Jobs)
-- Verify Celery tasks actually perform their work
-- Test that ingestion tasks write to database, compute tasks populate artifact tables
 
 ### Run Tests
 
