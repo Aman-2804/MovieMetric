@@ -259,13 +259,8 @@ celery -A services.worker.worker_app.celery_app beat --loglevel=info
 
 ## Testing
 
-This project includes three types of tests that verify different aspects of the system.
+The project includes unit, integration, and worker tests covering core business logic, API endpoints, and background jobs.
 
-### Test Types
-
-**A. Unit Tests** (Fast, Pure Logic)
-**B. Integration Tests** (API + Database)
-**C. Worker Tests** (Background Jobs)
 
 ### Run Tests
 
@@ -286,7 +281,7 @@ pytest --cov=services --cov-report=html
 
 ## CI/CD
 
-**Continuous Integration (CI)** automatically runs tests on every code push, ensuring the system works correctly before changes are merged.
+GitHub Actions runs automated tests on every push and pull request.
 
 ### CI Configuration
 
